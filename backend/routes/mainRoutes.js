@@ -3,7 +3,7 @@ const router = express.Router();
 const mainControllers = require('../controllers/mainControllers');
 const isAdmin = require('../middleware/isAdmin');
 const User =require("../models/userModel");
-
+import { verifyToken } from "../middleware/authMiddleware.js";
 
 // USER
 router.post('/users', mainControllers.createUser);
@@ -21,6 +21,13 @@ router.get('/categories', mainControllers.getCategories);
 router.post('/products', mainControllers.createProduct);
 router.get('/products', mainControllers.getProducts);
 
+//ORDER
+router.post('/orders',mainControllers.createOrder);//new order create
+router.get('/orders',mainControllers.getMyOrders);
+router.get('/orders',mainControllers.getArtisanOrders); 
+router.get('/orders',mainControllers.getAllOrders);
+router.put('/orders/:id',mainControllers.updateOrderStatus);//update order
+router.delete('/orders/:id',mainControllers.deleteOrder);
 //Admin
 router.put('/admin/approve/artisan/:id',isAdmin,mainControllers.approveArtisan);
 router.put('/admin/approve/product/:id',isAdmin,mainControllers.approveProduct);

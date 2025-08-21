@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
+const Order=require('../models/orderModel');
 
 // ==================== USER ====================
 
@@ -113,5 +114,109 @@ exports.approveProduct = async (req, res) => {
         res.json({ message: "Product approved successfully" });
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+// 1. Create Order (Customer)
+exports.createOrder = async (req, res) => {
+    try {
+        const { product, quantity, artisan } = req.body;
+
+        const productData = await Product.findById(product);
+        if (!productData) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        const totalPrice = productData.price * quantity;
+
+        const newOrder = new Order({
+            customer: req.user._id,
+            product,
+            artisan,
+            quantity,
+            totalPrice,
+            status: 'pending'
+        });
+
+        await newOrder.save();
+        res.status(201).json({ message: 'Order created successfully', order: newOrder });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// 2. Get My Orders (Customer)
+exports.getMyOrders = async (req, res) => {
+    try {
+        const orders = await Order.find({ customer: req.user._id })
+            .populate('product')
+            .populate('artisan', 'name email');
+
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// 3. Get Orders for Artisan (Seller)
+exports.getArtisanOrders = async (req, res) => {
+    try {
+        const orders = await Order.find({ artisan: req.user._id })
+            .populate('product')
+            .populate('customer', 'name email');
+
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// 4. Get All Orders (Admin)
+exports.getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.find()
+            .populate('product')
+            .populate('customer', 'name email')
+            .populate('artisan', 'name email');
+
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// 5. Update Order Status (Admin / Artisan)
+exports.updateOrderStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        order.status = status;
+        await order.save();
+
+        res.status(200).json({ message: 'Order status updated', order });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// 6. Delete Order (Admin / Customer cancel)
+exports.deleteOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        await order.deleteOne();
+        res.status(200).json({ message: 'Order deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

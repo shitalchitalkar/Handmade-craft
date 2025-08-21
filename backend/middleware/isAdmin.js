@@ -7,3 +7,5 @@ const isAdmin = (req, res, next) => {
     }
 };
 module.exports = isAdmin;
+
+//it required for admin acess he can see, delete, update the order from this logic
