@@ -1,14 +1,17 @@
-const express = require('express');
-const app =express();
-const mongoose = require('mongoose');
-const mainRoutes = require('./routes/mainRoutes');
-const authRoutes = require ('./routes/authRoutes');
-    const cors = require("cors");
-//app.use(cors({ origin: "http://localhost:3000" }));
+import express from 'express';
+import mongoose from 'mongoose';
+import mainRoutes from './routes/mainRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config();
+const app = express();
 
-app.use(cors({origin:"http://localhost:3002", methods:["GET","POST","PUT","DELETE"],Credential:true,}));
-
-
+app.use(cors({
+  origin:"http://localhost:3002",
+  methods:["GET","POST","PUT","DELETE"],
+  credentials:true
+}));
 app.use(express.json());
 
 mongoose.connect('mongodb://127.0.0.1:27017/testdb')
@@ -16,12 +19,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/testdb')
     .catch(err => console.log(err));
 
 app.use('/api', mainRoutes);
-app.use('/api',authRoutes);
+app.use('/api', authRoutes);
 
-// PORT set 
 const PORT = process.env.PORT || 5000;
-
-// Server start 
 app.listen(PORT, () => {
     console.log('Server is running on http://localhost:'+PORT);
 });

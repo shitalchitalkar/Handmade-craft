@@ -1,11 +1,11 @@
 // middleware/isAdmin.js
-const isAdmin = (req, res, next) => {
+exports. isAdmin = (req, res, next) => {
     if (req.user && req.user.role === 'admin') {
         next();
     } else {
         return res.status(403).json({ message: 'Access denied' });
     }
 };
-module.exports = isAdmin;
+
 
 //it required for admin acess he can see, delete, update the order from this logic

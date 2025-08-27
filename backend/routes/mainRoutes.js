@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const mainControllers = require('../controllers/mainControllers');
-const isAdmin = require('../middleware/isAdmin');
-const User =require("../models/userModel");
+
+import express from "express";
+import * as mainControllers from "../controllers/mainControllers.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
+import {isAdmin} from"../middleware/isAdmin.js";
+
+const router = express.Router();
 
 // USER
 router.post('/users', mainControllers.createUser);
@@ -22,14 +23,15 @@ router.post('/products', mainControllers.createProduct);
 router.get('/products', mainControllers.getProducts);
 
 //ORDER
-router.post('/orders',mainControllers.createOrder);//new order create
-router.get('/orders',mainControllers.getMyOrders);
-router.get('/orders',mainControllers.getArtisanOrders); 
-router.get('/orders',mainControllers.getAllOrders);
-router.put('/orders/:id',mainControllers.updateOrderStatus);//update order
-router.delete('/orders/:id',mainControllers.deleteOrder);
+router.post('/orders',verifyToken,mainControllers.createOrder);//new order create
+router.get('/orders',verifyToken,mainControllers.getMyOrders);
+router.get('/orders',verifyToken,mainControllers.getArtisanOrders); 
+router.get('/orders',verifyToken,mainControllers.getAllOrders);
+router.put('/orders/:id',verifyToken,mainControllers.updateOrderStatus);//update order
+router.delete('/orders/:id',verifyToken,mainControllers.deleteOrder);
 //Admin
-router.put('/admin/approve/artisan/:id',isAdmin,mainControllers.approveArtisan);
-router.put('/admin/approve/product/:id',isAdmin,mainControllers.approveProduct);
+router.put('/admin/approve/artisan/:id',verifyToken,isAdmin,mainControllers.approveArtisan);
+router.put('/admin/approve/product/:id',verifyToken,isAdmin,mainControllers.approveProduct);
 
-module.exports = router;
+//module.exports = router;
+export default router;

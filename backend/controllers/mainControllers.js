@@ -118,6 +118,50 @@ exports.approveProduct = async (req, res) => {
 };
 
 // 1. Create Order (Customer)
+
+
+exports.createOrder = async (req, res) => {
+  try {
+    const { product, quantity, artisan } = req.body;
+
+    // Product fetch
+    const productData = await Product.findById(product);
+    if (!productData) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Artisan check
+    const artisanData = await User.findById(artisan);
+    if (!artisanData) {
+      return res.status(404).json({ message: "Artisan not found" });
+    }
+
+    // Token मधून customer id घ्या
+    const customerId = req.user.id;
+
+    const totalPrice = productData.price * quantity;
+
+    const newOrder = new Order({
+      customer: customerId,
+      product,
+      artisan,
+      quantity,
+      totalPrice,
+      status: "pending",
+    });
+
+    await newOrder.save();
+    res.status(201).json({ message: "Order created successfully", order: newOrder });
+  } catch (err) {
+    console.error(err); // console मध्ये error पाहा
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+
+
+/*
 exports.createOrder = async (req, res) => {
     try {
         const { product, quantity, artisan } = req.body;
@@ -144,7 +188,7 @@ exports.createOrder = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
-};
+};*/
 
 // 2. Get My Orders (Customer)
 exports.getMyOrders = async (req, res) => {
@@ -220,3 +264,4 @@ exports.deleteOrder = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
