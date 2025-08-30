@@ -24,9 +24,9 @@ router.get('/products', mainControllers.getProducts);
 
 //ORDER
 router.post('/orders',verifyToken,mainControllers.createOrder);//new order create
-router.get('/orders',verifyToken,mainControllers.getMyOrders);
-router.get('/orders',verifyToken,mainControllers.getArtisanOrders); 
-router.get('/orders',verifyToken,mainControllers.getAllOrders);
+router.get('/orders/my',verifyToken,mainControllers.getMyOrders);
+router.get('/orders/artisan',verifyToken,mainControllers.getArtisanOrders); 
+router.get('/orders/all',verifyToken,mainControllers.getAllOrders);
 router.put('/orders/:id',verifyToken,mainControllers.updateOrderStatus);//update order
 router.delete('/orders/:id',verifyToken,mainControllers.deleteOrder);
 //Admin

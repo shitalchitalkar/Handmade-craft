@@ -1,19 +1,53 @@
-import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import React, { useContext } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-const Navbar = () => {
-  const { user, logout } = useAuth();
+export default function Navbar() {
+  const { user, logout } = useContext(AuthContext);
 
   return (
-    <nav style={{ padding: "10px", background: "#333", color: "#fff" }}>
-      <Link to="/" style={{ color: "#fff", marginRight: "10px" }}>Home</Link>
-      {!user && <Link to="/login" style={{ color: "#fff", marginRight: "10px" }}>Login</Link>}
-      {user && user.role === "admin" && <Link to="/admin" style={{ color: "#fff", marginRight: "10px" }}>Admin</Link>}
-      {user && user.role === "customer" && <Link to="/customer" style={{ color: "#fff", marginRight: "10px" }}>Customer</Link>}
-      {user && user.role === "artisan" && <Link to="/artisan" style={{ color: "#fff", marginRight: "10px" }}>Artisan</Link>}
-      {user && <button onClick={logout} style={{ marginLeft: "10px" }}>Logout</button>}
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container">
+        <Link className="navbar-brand" to="/">🧵 HandmadeCraft</Link>
+        <button className="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+          <span className="navbar-toggler-icon" />
+        </button>
+
+        <div className="collapse navbar-collapse" id="nav">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item"><NavLink className="nav-link" to="/">Home</NavLink></li>
+
+            <li className="nav-item dropdown">
+              <NavLink className="nav-link dropdown-toggle" to="/products" role="button" data-bs-toggle="dropdown">Products</NavLink>
+              <ul className="dropdown-menu">
+                <li><NavLink className="dropdown-item" to="/products">All Products</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/products/category/Brass">Brass Handicrafts</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/products/category/Metal">Metal Handicrafts</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/products/category/Wooden">Wooden Handicrafts</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/products/category/Souvenirs">Souvenirs</NavLink></li>
+              </ul>
+            </li>
+
+            <li className="nav-item"><NavLink className="nav-link" to="/categories">Categories</NavLink></li>
+            <li className="nav-item"><NavLink className="nav-link" to="/about">About</NavLink></li>
+          </ul>
+
+          <ul className="navbar-nav">
+            <li className="nav-item me-2"><NavLink className="nav-link" to="/cart">Cart 🛒</NavLink></li>
+            {!user ? (
+              <>
+                <li className="nav-item"><NavLink className="nav-link" to="/login">Login</NavLink></li>
+                <li className="nav-item"><NavLink className="nav-link" to="/register">Register</NavLink></li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item"><NavLink className="nav-link" to="/profile">Hi, {user.name || user.role}</NavLink></li>
+                <li className="nav-item"><button className="btn btn-sm btn-danger ms-2" onClick={logout}>Logout</button></li>
+              </>
+            )}
+          </ul>
+        </div>
+      </div>
     </nav>
   );
-};
-
-export default Navbar;
+}

@@ -1,21 +1,10 @@
-
-import React from "react";
-
-const Footer = () => {
+export default function Footer() {
   return (
-    <footer style={{
-      background: "#333",
-      color: "white",
-      textAlign: "center",
-      padding: "15px",
-      marginTop: "20px",
-      position: "fixed",
-      bottom: 0,
-      width: "100%"
-    }}>
-      <p>© 2025 HandmadeCraft. All Rights Reserved.</p>
+    <footer className="bg-dark text-light py-3 mt-5">
+      <div className="container d-flex justify-content-between">
+        <div>© {new Date().getFullYear()} HandmadeCraft</div>
+        <div>Contact: support@handmadecraft.local</div>
+      </div>
     </footer>
   );
-};
-
-export default Footer;
+}
