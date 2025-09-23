@@ -22,7 +22,7 @@ export default function App() {
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/category/:id" element={<ProductList />} />
         <Route path="/myproducts" element={<ProtectedRoute roles={['artisan']}><Products/></ProtectedRoute>} />
-        <Route path="/categories" element={<Categories/>} />
+       
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
         <Route path="/cart" element={<ProtectedRoute roles={['customer']}><Cart/></ProtectedRoute>} />
